@@ -28,18 +28,36 @@ jobs:
           source venv/bin/activate
           python -m pytest -v
 
+      - name: Upload app files
+        uses: actions/upload-artifact@v3
+        with:
+          name: flask-app
+          path: |
+            app.py
+            requirements.txt
+            project/
+            templates/
+            static/
+            tests/
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download app files
+        uses: actions/download-artifact@v3
+        with:
+          name: flask-app
+          path: ./app_upload
+
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
-          source: "."
+          source: "./app_upload"
           target: "/home/ubuntu/app"
 
       - name: SSH into EC2 and restart app
@@ -50,7 +68,8 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /home/ubuntu/app
-            source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
+            python3 -m venv venv
+            source venv/bin/activate
             pip install -r requirements.txt
             pkill -f "flask run" || true
             nohup flask --app app run --host=0.0.0.0 > flask.log 2>&1 &
