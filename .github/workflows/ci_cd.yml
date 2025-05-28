@@ -36,8 +36,7 @@ jobs:
             app.py
             requirements.txt
             project/
-            templates/
-            static/
+            instance/
             tests/
 
   deploy:
