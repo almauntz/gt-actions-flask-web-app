@@ -11,7 +11,7 @@ def test_new_user():
     THEN check the email, password_hashed, authenticated, and active fields are defined correctly
     """
     user = User('patkennedy79@gmail.com', 'FlaskIsAwesome')
-    assert user.email == 'patkennedy79@gmail.com'
+    assert user.email == 'patkennedy79@gmail.comm'
     assert user.password_hashed != 'FlaskIsAwesome'
     assert user.__repr__() == '<User: patkennedy79@gmail.com>'
     assert user.is_authenticated
