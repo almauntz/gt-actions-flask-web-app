@@ -26,7 +26,7 @@ jobs:
       - name: Run tests
         run: |
           source venv/bin/activate
-          pytest -v
+          python -m pytest -v
 
   deploy:
     needs: test
